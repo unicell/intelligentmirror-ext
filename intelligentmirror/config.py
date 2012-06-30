@@ -600,6 +600,13 @@ class YumConf(StartupConf):
     max_deb_size = Option(0)
     min_deb_size = Option(0)
 
+    # TGZ related config
+    enable_tgz_cache = Option(1)
+    tgz_cache_dir = Option('tgz')
+    tgz_cache_size = Option(0)
+    max_tgz_size = Option(0)
+    min_tgz_size = Option(0)
+
     _reposlist = []
 
 def readStartupConfig(configfile, root):

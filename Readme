@@ -1,5 +1,5 @@
 1. NAME
-       intelligentmirror - Squid url rewriter plugin for caching rpm/deb packages.
+       intelligentmirror - Squid url rewriter plugin for caching rpm/deb/tar.gz packages.
 
 2. SYNOPSIS
        To be used to with squid as a url rewriter plugin.
@@ -30,6 +30,7 @@
          url_rewrite_children 20
          acl intelligentmirror urlpath_regex -i \.rpm$
          acl intelligentmirror urlpath_regex -i \.deb$
+         acl intelligentmirror urlpath_regex -i \.tar.gz$
          url_rewrite_access allow intelligentmirror
          url_rewrite_access deny all
          cache deny intelligentmirror
@@ -163,6 +164,34 @@
               DEBs  with  size  less  than  min_rpm_size  will  not  be  cached.  This  size is in kilo bytes. Use 0 for no lower limit. e.g.
               min_deb_size = 10. Only debs with size more than 10KB will be cached.
                 NOTE : Don’t use min_deb_size = 10KB. Don’t append KB.
+                Default : 0
+
+       enable_tgz_cache
+              This  option  enables  the caching of tgz packages. It is assumed that all tgz packages will have an .tar.gz extension. This
+              option’s value can be either 0 or 1.
+                Default : 1
+
+       tgz_cache_dir
+              Directory to cach tgz packages. Directory name relative to base_dir. e.g. if you specify tgz_cache_dir =  tgz,  actual  path
+              for caching tgz packages would be /var/spool/squid/intelligentmirror/tgz/ .
+                Default : tgz
+
+       tgz_cache_size
+              Maximum total size of caching directory. 0 for unlimited. This size is in Mega Bytes. e.g. tgz_cache_size = 200 will limit your
+              cache size to 200MB.
+                NOTE : Don’t use tgz_cache_size = 200MB. Don’t append MB.
+                Default : 0
+
+       max_tgz_size
+              tgzs with size more than max_tgz_size will not be cached. This size is in  kilo  bytes.  Use  0  for  unlimited  caching.  e.g.
+              max_tgz_size = 10000. Only tgzs with size less than 10MB (10000KB) will be cached.
+                NOTE : Don’t use max_tgz_size = 10000KB. Don’t append KB.
+                Default : 0
+
+       min_tgz_size
+              tgzs  with  size  less  than  min_rpm_size  will  not  be  cached.  This  size is in kilo bytes. Use 0 for no lower limit. e.g.
+              min_tgz_size = 10. Only tgzs with size more than 10KB will be cached.
+                NOTE : Don’t use min_tgz_size = 10KB. Don’t append KB.
                 Default : 0
 
 6. FILES

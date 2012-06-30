@@ -62,8 +62,11 @@ rpm_cache_dir = os.path.join(base_dir, mainconf.rpm_cache_dir)
 # deb specific options
 deb_cache_dir = os.path.join(base_dir, mainconf.deb_cache_dir)
 
+# tgz specific options
+tgz_cache_dir = os.path.join(base_dir, mainconf.tgz_cache_dir)
+
 # List of cache directories
-squid_cache_dir_list = [base_dir, temp_dir, rpm_cache_dir, deb_cache_dir]
+squid_cache_dir_list = [base_dir, temp_dir, rpm_cache_dir, deb_cache_dir, tgz_cache_dir]
 
 def set_logging():
     logging.basicConfig(level=logging.DEBUG,

@@ -57,6 +57,7 @@ XMLRPC_SERVER = 1
 DOWNLOAD_SCHEDULER = 2
 rpm_files = ['.rpm']
 deb_files = ['.deb']
+tgz_files = ['.tar.gz']
 redirect = '303'
 format = '%s %s %s %s %s'
 cache_url = 'http://' + str(cache_host) + '/' 
@@ -76,6 +77,12 @@ deb_cache_size = int(mainconf.deb_cache_size)
 max_deb_size = int(mainconf.max_deb_size)
 min_deb_size = int(mainconf.min_deb_size)
 
+# TGZ related variables.
+enable_tgz_cache = int(mainconf.enable_tgz_cache)
+tgz_cache_dir = os.path.join(base_dir, mainconf.tgz_cache_dir)
+tgz_cache_size = int(mainconf.tgz_cache_size)
+max_tgz_size = int(mainconf.max_tgz_size)
+min_tgz_size = int(mainconf.min_tgz_size)
 
 def set_proxy():
     if proxy_username and proxy_password:
@@ -315,6 +322,15 @@ def cache_package(client, url, type, package):
         cache_size = deb_cache_size
         cache_dir = deb_cache_dir
 
+    if type == 'TGZ':
+        params = urlparse.urlsplit(url)[3]
+        path = os.path.join(tgz_cache_dir, package)
+        cached_url = os.path.join(cache_url, base_dir.strip('/').split('/')[-1], type.lower())
+        max_size = max_tgz_size
+        min_size = min_tgz_size
+        cache_size = tgz_cache_size
+        cache_dir = tgz_cache_dir
+
     if os.path.isfile(path):
         log(format%(client, package, 'CACHE_HIT', type, 'Requested package was found in cache.'))
         remove(package)
@@ -388,6 +404,26 @@ def squid_part():
                             log(format%(client, package, 'NEW_URL', type, new_url))
         except:
             log(format%(client, '-', 'NEW_URL', 'DEB', 'Error in parsing the url ' + new_url))
+
+        # tgz caching is handled here.
+        try:
+            if enable_tgz_cache and host.find(cache_host) < 0:
+                for file in tgz_files:
+                    if path.endswith(file):
+                        # This signifies that URL is a tgz package
+                        package = os.path.basename(path)
+                        type = 'TGZ'
+                        packages = package_pool.get()
+                        if package in packages:
+                            package_pool.inc_score(package)
+                            pass
+                        else:
+                            package_pool.add(package)
+                            log(format%(client, package, 'URL_HIT', type, url[0]))
+                            new_url = cache_package(client, url[0], type, package)
+                            log(format%(client, package, 'NEW_URL', type, new_url))
+        except:
+            log(format%(client, '-', 'NEW_URL', 'TGZ', 'Error in parsing the url ' + new_url))
 
         # Flush the new url to stdout for squid to process
         try:
