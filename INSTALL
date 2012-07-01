@@ -88,6 +88,8 @@ url_rewrite_children 20
 acl intelligentmirror urlpath_regex -i \.rpm$
 acl intelligentmirror urlpath_regex -i \.deb$
 acl intelligentmirror urlpath_regex -i \.tar.gz$
+acl intelligentmirror urlpath_regex -i \.tgz$
+acl intelligentmirror urlpath_regex -i \.zip$
 url_rewrite_access allow intelligentmirror
 cache deny intelligentmirror
 redirector_bypass on

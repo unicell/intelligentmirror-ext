@@ -31,6 +31,8 @@
          acl intelligentmirror urlpath_regex -i \.rpm$
          acl intelligentmirror urlpath_regex -i \.deb$
          acl intelligentmirror urlpath_regex -i \.tar.gz$
+         acl intelligentmirror urlpath_regex -i \.tgz$
+         acl intelligentmirror urlpath_regex -i \.zip$
          url_rewrite_access allow intelligentmirror
          url_rewrite_access deny all
          cache deny intelligentmirror
